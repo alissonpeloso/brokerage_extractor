@@ -109,3 +109,6 @@ class Brokerage:
             "ir": self.ir,
             "broker": self.broker
         }
+        
+    def __str__(self) -> str:
+        return f"Brokerage(date={self.date}, stockCode={self.stockCode}, quantity={self.quantity}, price={self.price}, fees={self.fees}, ir={self.ir}, broker={self.broker})"
