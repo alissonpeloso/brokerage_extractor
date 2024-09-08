@@ -11,7 +11,8 @@ class Brokerage:
             ir: float|None = None, 
             broker: str|None = None
         ) -> None:
-        self.__setattr__("date", date)
+        if date:
+            self.__setattr__("date", date)
         self._stockCode = stockCode or None
         self._quantity = quantity or None
         self._price = price or None

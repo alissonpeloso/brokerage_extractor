@@ -2,13 +2,17 @@
 import requests
 import re
 
-from abtract.extractor import Extractor
+from abstract.extractor import Extractor
 from models.brokerage import Brokerage
 
 class Rico (Extractor):
     
     def extract(self) -> list:
+        print(self._text)
         brokerages = self._get_brokerages()
+        fee, ir = self._get_taxes()
+        self._make_brokerage_apportionment(brokerages, fee, ir)
+        
         return brokerages
     
     def _get_auction_date(self) -> str | None:
@@ -168,13 +172,62 @@ class Rico (Extractor):
 
         # Raise an exception if no valid stock code is found after all attempts
         raise Exception("Stock code not found after trying all possibilities.")
+    
+    def _get_taxes(self) -> list:
+        fee_patterns = [
+            r"Taxa de liquidação.*?(\d+,\d+)",
+            r"Taxa de Registro.*?(\d+,\d+)",
+            r"Taxa de termo/opções.*?(\d+,\d+)",
+            r"Taxa A.N.A.*?(\d+,\d+)",
+            r"Emolumentos.*?(\d+,\d+)",
+            r"Taxa Operacional.*?(\d+,\d+)",
+            r"Execução.*?(\d+,\d+)",
+            r"Taxa de Custódia.*?(\d+,\d+)",
+            r"Impostos.*?(\d+,\d+)",
+            r"Outros.*?(\d+,\d+)"
+        ]
+        
+        ir_pattern = r"I.R.R.F.*?(\d+,\d+)(?!.*\d+,\d+)"
+        
+        fees = []
+        for pattern in fee_patterns:
+            match = re.search(pattern, self._text, re.IGNORECASE)
+            if match:
+                fees.append(float(match.group(1).replace(",", ".")))
+        
+        ir_match = re.search(ir_pattern, self._text, re.IGNORECASE)
+        ir = float(ir_match.group(1).replace(",", ".")) if ir_match else 0.0
+        
+        fee = sum(fees)
+        
+        return [fee, ir]
+    
+    def _make_brokerage_apportionment(self, brokerages: list, fee: float, ir: float):
+        """
+        Splits the fee and IR among the brokerages.
+        
+        Args:
+            brokerages (list): A list of Brokerage objects.
+            fee (float): The total fee to split.
+            ir (float): The total IR to split.
+            
+        Returns:
+            None
+        """
+        total_amount, sold_amount = 0, 0
+        
+        for brokerage in brokerages:
+            total_amount += abs(brokerage.price * brokerage.quantity)
+            if brokerage.quantity < 0:
+                sold_amount += abs(brokerage.price * brokerage.quantity)
+                
+        for brokerage in brokerages:
+            brokerage.fees = round(fee * abs(brokerage.price * brokerage.quantity) / total_amount, 2) if total_amount else 0.0
+            
+            if brokerage.quantity < 0:
+                brokerage.ir = round(ir * abs(brokerage.price * brokerage.quantity) / sold_amount, 2) if sold_amount else 0.0
+        
+        return 
 
     def _get_deal_type(self, line: str) -> str | None:
         raise NotImplementedError
-
-
-rico = Rico("/home/alisson/Desktop/teste.pdf", "933")
-data = rico.extract()
-
-for item in data:
-    print(item.__str__())
