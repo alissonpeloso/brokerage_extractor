@@ -8,7 +8,6 @@ from models.brokerage import Brokerage
 class Rico (Extractor):
     
     def extract(self) -> list:
-        print(self._text)
         brokerages = self._get_brokerages()
         fee, ir = self._get_taxes()
         self._make_brokerage_apportionment(brokerages, fee, ir)

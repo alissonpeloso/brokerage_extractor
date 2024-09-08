@@ -102,7 +102,7 @@ class Brokerage:
         
     def __json__(self):
         return {
-            "date": self.date,
+            "date": self.date.isoformat() if self.date else None,
             "stockCode": self.stockCode,
             "quantity": self.quantity,
             "price": self.price,
