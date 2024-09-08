@@ -1,3 +1,4 @@
+from extractors.nuinvest import Nuinvest
 from extractors.rico import Rico
 import sys
 
@@ -13,6 +14,9 @@ if __name__ == "__main__":
     if broker == "rico":
         rico = Rico(path, password)
         data = rico.extract()
+    if broker == "nuinvest":
+        nuinvest = Nuinvest(path, password)
+        data = nuinvest.extract()
     else:
         print("Broker not supported")
         sys.exit(1)
