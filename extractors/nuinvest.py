@@ -24,9 +24,22 @@ class Nuinvest (Extractor):
         pattern = r"Data Pregão(.|\n)*?(\d{2}/\d{2}/\d{4})"
         
         # Search for the pattern in the entire text
-        match = re.search(pattern, self._text, re.IGNORECASE)
+        match = re.search(pattern, self._text, re.DOTALL)
         
         # Return the date if found, otherwise return None
+        return match.group(2) if match else None
+
+
+    def _get_note_id(self) -> str | None:
+        """
+        Extracts the note ID from the given text.
+        
+        Returns:
+            str or None: The extracted note ID, or None if no ID is found.
+        """
+        pattern = r"Número da nota(.|\n)*?(\d+)"
+        match = re.search(pattern, self._text, re.DOTALL)
+        
         return match.group(2) if match else None
 
 
@@ -43,7 +56,8 @@ class Nuinvest (Extractor):
         
         brokerages = []
         date = self._get_auction_date()
-        
+        note_id = self._get_note_id()
+
         if not date:
             raise ValueError("Auction date not found in the provided text")
         
@@ -66,6 +80,7 @@ class Nuinvest (Extractor):
                 continue
             
             brokerage.__setattr__("date", date)
+            brokerage.__setattr__("note_id", note_id)
             brokerages.append(brokerage)
         
         return brokerages

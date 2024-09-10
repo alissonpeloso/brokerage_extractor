@@ -14,6 +14,7 @@ class Rico (Extractor):
         
         return brokerages
     
+    
     def _get_auction_date(self) -> str | None:
         """
         Extracts the auction date from the given text.
@@ -29,6 +30,19 @@ class Rico (Extractor):
         
         # Return the date if found, otherwise return None
         return match.group(1) if match else None
+    
+    
+    def _get_note_id(self) -> str | None:
+        """
+        Extracts the note ID from the given text.
+        
+        Returns:
+            str or None: The extracted note ID, or None if no ID is found.
+        """
+        pattern = r"Nr\. nota(.|\n)*?(\d+)"
+        match = re.search(pattern, self._text, re.DOTALL)
+        
+        return match.group(2) if match else None
 
 
     def _get_brokerages(self) -> list:
@@ -44,6 +58,7 @@ class Rico (Extractor):
         
         brokerages = []
         date = self._get_auction_date()
+        note_id = self._get_note_id()
         
         if not date:
             raise ValueError("Auction date not found in the provided text")
@@ -67,6 +82,7 @@ class Rico (Extractor):
                 continue
             
             brokerage.__setattr__("date", date)
+            brokerage.__setattr__("note_id", note_id)
             brokerages.append(brokerage)
         
         return brokerages
@@ -172,6 +188,7 @@ class Rico (Extractor):
         # Raise an exception if no valid stock code is found after all attempts
         raise Exception("Stock code not found after trying all possibilities.")
     
+    
     def _get_taxes(self) -> list:
         fee_patterns = [
             r"Taxa de liquidação.*?(\d+,\d+)",
@@ -201,6 +218,7 @@ class Rico (Extractor):
         
         return [fee, ir]
     
+    
     def _make_brokerage_apportionment(self, brokerages: list, fee: float, ir: float):
         """
         Splits the fee and IR among the brokerages.
@@ -227,6 +245,7 @@ class Rico (Extractor):
                 brokerage.ir = round(ir * abs(brokerage.price * brokerage.quantity) / sold_amount, 2) if sold_amount else 0.0
         
         return 
+
 
     def _get_deal_type(self, line: str) -> str | None:
         raise NotImplementedError

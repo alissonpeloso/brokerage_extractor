@@ -9,7 +9,8 @@ class Brokerage:
             price: float|None = None, 
             fees: float|None = None, 
             ir: float|None = None, 
-            broker: str|None = None
+            broker: str|None = None,
+            note_id: str|None = None
         ) -> None:
         if date:
             self.__setattr__("date", date)
@@ -19,6 +20,7 @@ class Brokerage:
         self._fees = fees or None
         self._ir = ir or None
         self._broker = broker or None
+        self._note_id = note_id or None
         
     @property
     def date(self) -> datetime.date|None:
@@ -100,6 +102,17 @@ class Brokerage:
         
         self._broker = broker
         
+    @property
+    def note_id(self) -> str|None:
+        return self._note_id
+    
+    @note_id.setter
+    def note_id(self, note_id) -> None:
+        if not isinstance(note_id, str):
+            raise TypeError("Note ID must be a string")
+        
+        self._note_id = note_id
+        
     def __json__(self):
         return {
             "date": self.date.isoformat() if self.date else None,
@@ -108,8 +121,9 @@ class Brokerage:
             "price": self.price,
             "fees": self.fees,
             "ir": self.ir,
-            "broker": self.broker
+            "broker": self.broker,
+            "noteId": self.note_id
         }
         
     def __str__(self) -> str:
-        return f"Brokerage(date={self.date}, stockCode={self.stockCode}, quantity={self.quantity}, price={self.price}, fees={self.fees}, ir={self.ir}, broker={self.broker})"
+        return f"Brokerage(date={self.date}, stockCode={self.stockCode}, quantity={self.quantity}, price={self.price}, fees={self.fees}, ir={self.ir}, broker={self.broker}), noteId={self.note_id}"

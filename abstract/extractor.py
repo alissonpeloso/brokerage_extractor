@@ -34,6 +34,10 @@ class Extractor(abc.ABC):
         pass
     
     @abc.abstractmethod
+    def _get_note_id(self, line: str) -> str | None:
+        pass
+    
+    @abc.abstractmethod
     def _get_brokerages(self, text: str) -> list:
         pass
     
