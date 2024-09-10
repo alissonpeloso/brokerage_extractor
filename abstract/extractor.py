@@ -7,8 +7,7 @@ class Extractor(abc.ABC):
         try:
             self._text = self.pdf_to_text(path, password)
         except Exception as e:
-            print(f"Error extracting text from PDF, check if the file is password protected.")
-            raise e
+            raise ValueError("Error extracting text from PDF, check if the file is password protected.")
             
     def pdf_to_text(self, path: str, passport: str | None) -> str:
         """
