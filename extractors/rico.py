@@ -66,7 +66,7 @@ class Rico (Extractor):
             if not brokerage:
                 continue
             
-            brokerage.date = date
+            brokerage.__setattr__("date", date)
             brokerages.append(brokerage)
         
         return brokerages

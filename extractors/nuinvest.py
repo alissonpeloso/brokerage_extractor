@@ -21,13 +21,13 @@ class Nuinvest (Extractor):
             str or None: The extracted auction date in the format "dd/mm/yyyy", or None if no date is found.
         """
         # Combine the search for "Data pregão" and the date pattern in one regex
-        pattern = r"Data pregão.*?(\d{2}/\d{2}/\d{4})"
+        pattern = r"Data Pregão(.|\n)*?(\d{2}/\d{2}/\d{4})"
         
         # Search for the pattern in the entire text
-        match = re.search(pattern, self._text, re.DOTALL)
+        match = re.search(pattern, self._text, re.IGNORECASE)
         
         # Return the date if found, otherwise return None
-        return match.group(1) if match else None
+        return match.group(2) if match else None
 
 
     def _get_brokerages(self) -> list:
@@ -47,7 +47,7 @@ class Nuinvest (Extractor):
         if not date:
             raise ValueError("Auction date not found in the provided text")
         
-        pattern = r"Negócios realizados.*?Resumo dos Negócios"
+        pattern = r"MMeerrccaaddoo(.|\n)*?RReessuummoo"
         match = re.search(pattern, self._text, re.DOTALL)
         
         if not match:
@@ -56,7 +56,7 @@ class Nuinvest (Extractor):
         lines = match.group(0).split("\n")
         
         # Ignore first and last lines and table header
-        lines = lines[2:-1]
+        lines = lines[1:-1]
             
         # Look for the "Negócios realizados" section in the text
         for line in lines:
@@ -65,7 +65,7 @@ class Nuinvest (Extractor):
             if not brokerage:
                 continue
             
-            brokerage.date = date
+            brokerage.__setattr__("date", date)
             brokerages.append(brokerage)
         
         return brokerages
@@ -123,7 +123,7 @@ class Nuinvest (Extractor):
             stockCode=stock_code, 
             quantity=quantity, 
             price=price, 
-            broker="rico"
+            broker="nuinvest",
         )
                         
                         

@@ -3,7 +3,7 @@ import abc
 
 class Extractor(abc.ABC):
     
-    def __init__(self, path: str, password: str | None) -> None:
+    def __init__(self, path: str, password: str | None = None) -> None:
         try:
             self._text = self.pdf_to_text(path, password)
         except Exception as e:
