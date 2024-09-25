@@ -37,7 +37,7 @@ class Nuinvest (Extractor):
         Returns:
             str or None: The extracted note ID, or None if no ID is found.
         """
-        pattern = r"Número da nota(.|\n)*?(\d+)"
+        pattern = r"Número da nota(.|\n)*?(\d{5,})"
         match = re.search(pattern, self._text, re.DOTALL)
         
         return match.group(2) if match else None
