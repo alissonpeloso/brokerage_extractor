@@ -122,8 +122,8 @@ class Brokerage:
             "fees": self.fees,
             "ir": self.ir,
             "broker": self.broker,
-            "noteId": self.note_id
+            "note_id": self.note_id
         }
         
     def __str__(self) -> str:
-        return f"Brokerage(date={self.date}, stock_symbol={self.stock_symbol}, quantity={self.quantity}, price={self.price}, fees={self.fees}, ir={self.ir}, broker={self.broker}), noteId={self.note_id}"
+        return f"Brokerage(date={self.date}, stock_symbol={self.stock_symbol}, quantity={self.quantity}, price={self.price}, fees={self.fees}, ir={self.ir}, broker={self.broker}), note_id={self.note_id}"
