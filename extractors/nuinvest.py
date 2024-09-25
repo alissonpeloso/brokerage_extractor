@@ -129,15 +129,14 @@ class Nuinvest (Extractor):
             # Skip lines with invalid data
             return None
         
-        # If the deal type is 'V' (sell), make quantity negative
-        if deal_type == "V":
-            quantity = -quantity
+        operation = Brokerage.OPERATION_BUY if deal_type == "C" else Brokerage.OPERATION_SELL
         
         # Append the brokerage information
         return Brokerage(
             stock_symbol=stock_symbol, 
             quantity=quantity, 
             price=price, 
+            operation=operation,
             broker="nuinvest",
         )
                         

@@ -1,12 +1,21 @@
 import datetime
 
 class Brokerage:
+    
+    OPERATION_BUY = "buy"
+    OPERATION_SELL = "sell"
+    OPERATIONS = [
+        OPERATION_BUY,
+        OPERATION_SELL
+    ]
+    
     def __init__(
             self, 
             date: datetime.date|str|None = None, 
             stock_symbol: str|None = None, 
             quantity: int|None = None, 
-            price: float|None = None, 
+            price: float|None = None,
+            operation: str|None = None,
             fees: float|None = None, 
             ir: float|None = None, 
             broker: str|None = None,
@@ -17,6 +26,7 @@ class Brokerage:
         self._stock_symbol = stock_symbol or None
         self._quantity = quantity or None
         self._price = price or None
+        self._operation = operation or None
         self._fees = fees or None
         self._ir = ir or None
         self._broker = broker or None
@@ -68,6 +78,17 @@ class Brokerage:
             raise TypeError("Price must be a float")
         
         self._price = price
+        
+    @property
+    def operation(self) -> str|None:
+        return self._operation
+    
+    @operation.setter
+    def operation(self, operation) -> None:
+        if not operation in self.OPERATIONS:
+            raise ValueError(f"Operation must be one of {self.OPERATIONS}")
+        
+        self._operation = operation
         
     @property
     def fees(self) -> float|None:
