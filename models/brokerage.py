@@ -4,7 +4,7 @@ class Brokerage:
     def __init__(
             self, 
             date: datetime.date|str|None = None, 
-            stockCode: str|None = None, 
+            stock_symbol: str|None = None, 
             quantity: int|None = None, 
             price: float|None = None, 
             fees: float|None = None, 
@@ -14,7 +14,7 @@ class Brokerage:
         ) -> None:
         if date:
             self.__setattr__("date", date)
-        self._stockCode = stockCode or None
+        self._stock_symbol = stock_symbol or None
         self._quantity = quantity or None
         self._price = price or None
         self._fees = fees or None
@@ -37,15 +37,15 @@ class Brokerage:
         self._date = date
         
     @property
-    def stockCode(self) -> str|None:
-        return self._stockCode
+    def stock_symbol(self) -> str|None:
+        return self._stock_symbol
     
-    @stockCode.setter
-    def stockCode(self, stockCode) -> None:
-        if not isinstance(stockCode, str):
+    @stock_symbol.setter
+    def stock_symbol(self, stock_symbol) -> None:
+        if not isinstance(stock_symbol, str):
             raise TypeError("Stock code must be a string")
         
-        self._stockCode = stockCode
+        self._stock_symbol = stock_symbol
     
     @property
     def quantity(self) -> int|None:
@@ -116,7 +116,7 @@ class Brokerage:
     def __json__(self):
         return {
             "date": self.date.isoformat() if self.date else None,
-            "stockCode": self.stockCode,
+            "stock_symbol": self.stock_symbol,
             "quantity": self.quantity,
             "price": self.price,
             "fees": self.fees,
@@ -126,4 +126,4 @@ class Brokerage:
         }
         
     def __str__(self) -> str:
-        return f"Brokerage(date={self.date}, stockCode={self.stockCode}, quantity={self.quantity}, price={self.price}, fees={self.fees}, ir={self.ir}, broker={self.broker}), noteId={self.note_id}"
+        return f"Brokerage(date={self.date}, stock_symbol={self.stock_symbol}, quantity={self.quantity}, price={self.price}, fees={self.fees}, ir={self.ir}, broker={self.broker}), noteId={self.note_id}"

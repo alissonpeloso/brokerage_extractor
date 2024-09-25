@@ -120,7 +120,7 @@ class Nuinvest (Extractor):
         stock_name_end = line.index(str(quantity)) - 1
         stock_name = line[stock_name_start:stock_name_end].replace("#", "").strip()
         
-        stock_code = self._get_stock_code(stock_name)
+        stock_symbol = self._get_stock_symbol(stock_name)
         
         try:
             price = float(price)
@@ -135,14 +135,14 @@ class Nuinvest (Extractor):
         
         # Append the brokerage information
         return Brokerage(
-            stockCode=stock_code, 
+            stock_symbol=stock_symbol, 
             quantity=quantity, 
             price=price, 
             broker="nuinvest",
         )
                         
                         
-    def _get_stock_code(self, stock_name: str) -> str:
+    def _get_stock_symbol(self, stock_name: str) -> str:
         """
         Extracts the stock code from the given stock name.
         
@@ -152,16 +152,16 @@ class Nuinvest (Extractor):
         Returns:
             str: The stock code.
         """
-        stock_code = stock_name.split(" ")[0]
+        stock_symbol = stock_name.split(" ")[0]
         
         # Remove any non-alphanumeric characters from the stock code
-        stock_code = re.sub(r"\W", "", stock_code)
+        stock_symbol = re.sub(r"\W", "", stock_symbol)
         
         # Remove F from the end of the stock code if it's there
-        stock_code = stock_code.rstrip("F")
+        stock_symbol = stock_symbol.rstrip("F")
                     
-        if stock_code:
-            return stock_code
+        if stock_symbol:
+            return stock_symbol
 
         # Raise an exception if no valid stock code is found after all attempts
         raise Exception("Stock code not found after trying all possibilities.")
