@@ -16,7 +16,7 @@ class Brokerage:
             quantity: int|None = None, 
             price: float|None = None,
             operation: str|None = None,
-            fees: float|None = None, 
+            fee: float|None = None, 
             ir: float|None = None, 
             broker: str|None = None,
             note_id: str|None = None
@@ -27,7 +27,7 @@ class Brokerage:
         self._quantity = quantity or None
         self._price = price or None
         self._operation = operation or None
-        self._fees = fees or None
+        self._fee = fee or None
         self._ir = ir or None
         self._broker = broker or None
         self._note_id = note_id or None
@@ -91,15 +91,15 @@ class Brokerage:
         self._operation = operation
         
     @property
-    def fees(self) -> float|None:
-        return self._fees
+    def fee(self) -> float|None:
+        return self._fee
     
-    @fees.setter
-    def fees(self, fees) -> None:
-        if not isinstance(fees, float):
-            raise TypeError("Fees must be a float")
+    @fee.setter
+    def fee(self, fee) -> None:
+        if not isinstance(fee, float):
+            raise TypeError("fee must be a float")
         
-        self._fees = fees
+        self._fee = fee
         
     @property
     def ir(self) -> float|None:
@@ -141,11 +141,11 @@ class Brokerage:
             "quantity": self.quantity,
             "price": self.price,
             "operation": self.operation,
-            "fees": self.fees,
+            "fee": self.fee,
             "ir": self.ir,
             "broker": self.broker,
             "note_id": self.note_id
         }
         
     def __str__(self) -> str:
-        return f"Brokerage(date={self.date}, stock_symbol={self.stock_symbol}, quantity={self.quantity}, price={self.price}, operation={self.operation}, fees={self.fees}, ir={self.ir}, broker={self.broker}), note_id={self.note_id}"
+        return f"Brokerage(date={self.date}, stock_symbol={self.stock_symbol}, quantity={self.quantity}, price={self.price}, operation={self.operation}, fee={self.fee}, ir={self.ir}, broker={self.broker}), note_id={self.note_id}"

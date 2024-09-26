@@ -204,16 +204,16 @@ class Rico (Extractor):
         
         ir_pattern = r"I.R.R.F.*?(\d+,\d+)(?!.*\d+,\d+)"
         
-        fees = []
+        fee = []
         for pattern in fee_patterns:
             match = re.search(pattern, self._text, re.IGNORECASE)
             if match:
-                fees.append(float(match.group(1).replace(",", ".")))
+                fee.append(float(match.group(1).replace(",", ".")))
         
         ir_match = re.search(ir_pattern, self._text, re.IGNORECASE)
         ir = float(ir_match.group(1).replace(",", ".")) if ir_match else 0.0
         
-        fee = sum(fees)
+        fee = sum(fee)
         
         return [fee, ir]
     
@@ -234,13 +234,13 @@ class Rico (Extractor):
         
         for brokerage in brokerages:
             total_amount += abs(brokerage.price * brokerage.quantity)
-            if brokerage.quantity < 0:
+            if brokerage.operation == Brokerage.OPERATION_SELL:
                 sold_amount += abs(brokerage.price * brokerage.quantity)
                 
         for brokerage in brokerages:
-            brokerage.fees = round(fee * abs(brokerage.price * brokerage.quantity) / total_amount, 2) if total_amount else 0.0
+            brokerage.fee = round(fee * abs(brokerage.price * brokerage.quantity) / total_amount, 2) if total_amount else 0.0
             
-            if brokerage.quantity < 0:
+            if brokerage.operation == Brokerage.OPERATION_SELL:
                 brokerage.ir = round(ir * abs(brokerage.price * brokerage.quantity) / sold_amount, 2) if sold_amount else 0.0
         
         return 
